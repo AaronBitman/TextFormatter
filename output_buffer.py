@@ -30,13 +30,22 @@ class OutputBuffer:
                     # So find the last point where we can break.
                     break_point = self.buffer.rfind(
                         " ", 0, OUTPUT_LINE_LENGTH + 1)
+                    # The above line looked for a space.
+                    # But a hyphen would do as well.
+                    break_point_2 = self.buffer.rfind(
+                        "-", 0, OUTPUT_LINE_LENGTH + 1) + 1
+                    if break_point_2 > break_point:
+                        break_point = break_point_2
                     # Justify the portion of the output
                     # we can handle and write it.
                     self.file_object.write(JustifiableStr(self.buffer[
                         :break_point]).full_justify(OUTPUT_LINE_LENGTH) + '\n')
                     # Now keep only the portion of
                     # the output we didn't write yet.
-                    self.buffer = self.buffer[break_point + 1:]
+                    if break_point == break_point_2:
+                        self.buffer = self.buffer[break_point:]
+                    else:
+                        self.buffer = self.buffer[break_point + 1:]
 
         INDENT_LENGTH = 2
         # Trim off the final '\n'.
